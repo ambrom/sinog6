@@ -1,0 +1,111 @@
+DOCKER
+
+
+Poskrbimo, da je naš računalnik posodobljen
+1. yum update
+Poženemo namestitveno skripto Dockerja
+2. curl -fsSL https://get.docker.com/ | sh
+Zaženemo Deamona
+3. service docker start
+Preverimo, če je Docker pravilno nameščen in "živ"
+4. docker run hello-world
+
+Ko imamo nameščen Docker se lahko poigramo z nameščanjem aplikacij
+
+1. Začnimo s HELLO WORLD-om
+ docker run ubuntu /bin/echo 'Hello world'
+Hello world
+ Zagnali smo prvi kontejner.
+ V zgornjem primeru:
+docker run, zažene kontejner
+ubuntu, je slika ki jo želimo zagnati  
+/bin/echo, je ukaz za zagon znotraj novega kontejnerja
+
+Kontejner se zažene, docker kreira novo Ubuntu okolje, zažene /bin/echo ukaz znotraj le tega in izpiše Hello world
+
+2. Interaktivni kontejner
+ docker run -t -i ubuntu /bin/bash
+
+docker run, zažene kontejner
+ubuntu, je slika ki jo želimo zagnali
+-t, parameter je dodeljen terminalu znotraj novega kontejnerja 
+-i, parameter nam dovoljuje delati interaktivne povezave
+/bin/bash, zažene Bash znotraj našega kontejnerja 
+
+Kontejner se je zagnal in lahko vidimo ukazno vrstico, kjer lahko poizkusimo par ukazov; ls, pwd, ... za izhod napišemo exit
+
+3. Deamonized Hello World 
+docker run -d ubuntu /bin/sh -c "while true; do echo hello world; sleep 1; done"
+1e5535038e285177d5214659a068137486f96ee5c2e85a4ac52dc83f2ebe4147
+
+docker run, zažene kontejner
+-d, parameter zažene kontejner v ozadju (deamon) 
+ubuntu, je slika ki jo želimo zagnati
+
+Definiramo ukaz, ki ga bomo pognali
+/bin/sh -c "while true; do echo hello world; sleep 1; done"
+
+V izpisu ne vidimo Hello world-a temveč dolg zapis
+1e5535038e285177d5214659a068137486f96ee5c2e85a4ac52dc83f2ebe4147
+
+Ta zapis imenujemo kontejner ID
+
+
+
+preverimo če je naš kontejner zagnan
+docker ps
+CONTAINER ID  IMAGE         COMMAND               CREATED        STATUS       PORTS NAMES
+1e5535038e28  ubuntu  /bin/sh -c 'while tr  2 minutes ago  Up 1 minute        sharp_allen
+
+Prikazane so naslednje informacije
+    1e5535038e28 je krajša varianta kontejnerjevega ID-ja
+    ubuntu je uporabljena slika
+    the command, status, and assigned name "sharp_allen".
+
+Če želimo preveriti, kaj kontejner dejansko dela, zaženimo naslednji ukaz docker logs
+docker logs sharp_allen
+hello world
+hello world
+hello world
+. . .
+ V kolikor želimo ugasniti kontejner, nam v pomoč služi ukaz docker stop
+docker stop sharp_allen
+sharp_allen
+
+Preverimo, če smo kontejner res ugasnili
+docker ps
+CONTAINER ID  IMAGE         COMMAND               CREATED        STATUS       PORTS NAMES
+
+
+4. Google Coder na CentOSu
+ Za primer vzemimo "Google Coder" datoteke sem pobral od kolega Marka Ambroža in so dostopne na https://github.com/ambrom/ambro-gc 
+
+1. Zgradimo sliko
+docker build -t example-gc github.com/ambrom/ambro-gc
+2. Zaženemo sliko
+docker run -d -p 8180:8180 -p 8181:8181 example-gc
+3. Preverimo, če zadeva teče
+docker ps
+4. Odpremo brskalnik in napišemo HTTPS://LOCALHOST:8181 - vpišemo geslo ...
+
+5. Google Coder na projektu Atomic
+ Za primer vzemimo "Google Coder" datoteke sem pobral od kolega Marka Ambroža in so dostopne na https://github.com/ambrom/ambro-gc 
+V primeru problema z mrežno kartico in dostopom do interneta na VBOXu, naredimo sledeče
+- nmcli con add type ethernet con-name enoimemreze ifname enp0s3
+- nmcli con modify enp0s3 ipv4.dhcp-hostname enoimemreze 
+- nmcli con up enoimemreze
+- nmcli device status
+- ping www.arnes.si
+
+1. Zgradimo sliko z ukazom pull
+docker pull ambrom/ambro-gc
+Če želimo prenesti določeno sliko ali niz slik (repozitorij) lahko uporabimo ukaz docker pull. V kolikor ni predvidene nobene oznake, Docker Engine uporabi :latest oznako kot privzeto. Zgornji ukaz tako prenese najnovejšo sliko iz repozitorija ambrom/ambro-gc
+2. Pogledamo katere slike imamo na voljo
+docker images 
+3. Zaženemo sliko
+docker run -dp 8180:8180 -p 8181:8181 ambrom/ambro-gc
+4. Preverimo, če zadeva teče
+docker ps
+5. Preverimo IP mašine na kateri teče naša aplikacija
+Ifconfig | more
+6. Odpremo brskalnik in napišemo HTTPS://192.168.56.129:8181 - vpišemo geslo ...
