@@ -1,4 +1,6 @@
-DOCKER
+    DOCKER v praksi
+    Demonstracija uporabe
+    Žiga Hudolin
 
 
 Poskrbimo, da je naš računalnik posodobljen
