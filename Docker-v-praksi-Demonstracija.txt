@@ -3,7 +3,9 @@
     Žiga Hudolin
 
 
-Poskrbimo, da je naš računalnik posodobljen
+Poskrbimo, da je operacijski sistem posodobljen
+(primer je izveden v okolju Centos 7)
+
 1. yum update
 Poženemo namestitveno skripto Dockerja
 2. curl -fsSL https://get.docker.com/ | sh
